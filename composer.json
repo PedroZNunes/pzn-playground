@@ -1,0 +1,19 @@
+{
+    "name": "weet/pzn-nyt-articles",
+    "description": "Wordpress Plugin responsible for communicating with New York Times Archive Search Restful API.",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Pedro Zgierski Nunes",
+            "email": "pnunes91@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "PZN\\NYT\\": "./Src/"
+        }
+    }
+}
