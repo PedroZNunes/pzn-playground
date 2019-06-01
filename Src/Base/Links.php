@@ -12,7 +12,6 @@ final class Links extends Base {
     
     protected function register() {
         add_filter( 'plugin_action_links_' . $this->constants::PLUGIN_NAME, array( $this, 'setup_action_links' ) );        
-        // add_filter( 'plugin_action_links_' . Constants::PLUGIN_NAME, array( $this, 'setup_action_links' ) );        
     }
 
     //add links to the plugins page, under the plugin name. settings, support, upgrade, stuff like that
