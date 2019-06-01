@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package: PedroNunesPlugin
+ */
 
 namespace PZN\NYT\Base;
 

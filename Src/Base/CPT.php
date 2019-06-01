@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package: PedroNunesPlugin
  */
@@ -9,10 +8,10 @@ namespace PZN\NYT\Base;
 /**
  * Cria e gerencia tipos custom de post
  */
-final class CPT extends Base{
+final class CPT extends Base {
 
     protected function register() {
-        add_action( 'init', array ( $this, 'create_articles' ) );
+        add_action( 'init', [ $this, 'create_articles' ] );
     }
 
     /**
@@ -22,9 +21,9 @@ final class CPT extends Base{
         //registering a new post type, like post, page, etc. It' have its own data type in the db
         $args = array(
             'public' => true,
-            'label' => 'Articles'
+            'label'  => 'Articles'
         );
-        register_post_type( 'article', $args);
+        register_post_type( 'article', $args );
     }
 
 }

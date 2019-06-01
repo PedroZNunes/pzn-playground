@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package: PedroNunesPlugin
  */
@@ -11,9 +10,6 @@ namespace PZN\NYT\Base;
  */
 final class Deactivation extends Base {
 
-    /**
-     * Registra o método de desativação no hook do wordpress
-     */
     protected function register() {
         register_deactivation_hook( $this->constants::MAIN_FILE, array( $this, 'on_deactivation' ) );
     }

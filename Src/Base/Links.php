@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package: PedroNunesPlugin
  */
@@ -9,7 +8,7 @@ namespace PZN\NYT\Base;
 /** 
  * Classe responsável pela criação de action links na página de ativação do plugin
  */
-class Links extends Base {
+final class Links extends Base {
     
     protected function register() {
         add_filter( 'plugin_action_links_' . $this->constants::PLUGIN_NAME, array( $this, 'setup_action_links' ) );        

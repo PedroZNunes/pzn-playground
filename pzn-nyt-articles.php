@@ -21,7 +21,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
 defined ( 'ABSPATH' ) or die ( 'Hey, you can not access this file' );
 
-if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
+if ( file_exists ( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
     require_once ( dirname( __FILE__ ) . '/vendor/autoload.php' );
 }
 

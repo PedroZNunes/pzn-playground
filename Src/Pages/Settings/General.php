@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package: PedroNunesPlugin
  */
@@ -11,30 +10,26 @@ use \PZN\NYT\Pages\Section as Section;
 /**
  * Cria a pagina de settings principal
  */
-class General {
+final class General {
 
     private $page_name;
-    private $form_name = 'filter-form';
-
+    private $form_name      = 'filter-form';
     private $opt_group_name = 'pzn_nyt_opt_group';
     
-    private $sections = array();
+    private $sections       = array();
 
-    private $opt_name = 'nyt_options';
+    private $opt_name       = 'nyt_options';
     private $opt_values;
 
     public function __construct( string $page_name ) {
-        $this->access_check();
+        $this->page_name    = $page_name;
         
         // Read in existing option value from database
-        $this->opt_values = get_option( $this->opt_name );
-
-        $this->page_name = $page_name;
+        $this->opt_values   = get_option( $this->opt_name );
 
         $this->create_sections();
 
         $this->register();
-        $this->print_page();
     }
 
 
@@ -72,7 +67,7 @@ class General {
     }
 
     private function register() { 
-        add_action( 'admin_init' , array( $this, 'page_init' ) );
+        add_action( 'admin_init', [$this, 'page_init'] );
     }
 
     // inicialização dos campos e seções
@@ -109,26 +104,11 @@ class General {
                 }
             }
         }
-
-        // add_settings_field( 
-        //     $field_name, 
-        //     'News Desk:', 
-        //     array( $this, 'pfield_news_desk' ), 
-        //     $this->page_name, 
-        //     $this->filters_sect_name
-        // );
-        
-        // add_settings_field( 
-        //     $this->source_opt_name,
-        //     'Source:', 
-        //     array( $this, 'pfield_source' ), 
-        //     $this->page_name, 
-        //     $this->filters_sect_name
-        // );
     }
 
 
-    private function print_page(){
+    public function print_page(){
+        $this->access_check();
 
         echo '<div class="wrap">';
 
@@ -143,15 +123,14 @@ class General {
         do_settings_sections( $this->page_name );
         submit_button();
         
-
         echo '</form>';
         echo '</div>';
     }
 
      /**
      * Validação dos campos conforme necessário
-     * @param array $input Contains all settings fields as array keys
-     * @return array new sanitized inputs
+     * @param   array $input Contains all settings fields as array keys
+     * @return  array new sanitized inputs
      */
 
     public function sanitize( $input ) {
@@ -172,34 +151,28 @@ class General {
 
     //print a form field
     public function print_field( $args ) {
-        $field_name = $args['name'];
-        $field_type = $args['type'];
+        $id    = $args['name'];
+        $type  = $args['type'];
 
-        $name = $this->opt_name . "[$field_name]";
-        $value = isset( $this->opt_values[$field_name] ) ? esc_attr(  $this->opt_values[$field_name] ) : '';
+        $name  = $this->opt_name . "[$id]";
+        $value = isset( $this->opt_values[$id] ) ? esc_attr(  $this->opt_values[$id] ) : '';
 
-        echo $this->print_input_tag($field_type, $name, $field_name, $value);
+        echo $this->print_input_tag($type, $name, $id, $value);
     }
 
-    // public function pfield_source() {
-    //     $name = $this->opt_name . "[$this->source_opt_name]";
-    //     $value = isset( $this->opt_values[$this->source_opt_name] ) ? esc_attr(  $this->opt_values[$this->source_opt_name] ) : '';
-        
-    //     echo $this->print_input_tag('text', $name, $this->source_opt_name, $value);
-    // }
-
-    public function psection_info() {
-        echo '<p> Echo inside the Section </p>';
-    }
+    public function psection_info() {}
     
+    /**
+     * @return string Text containing the HTML tag for the corresponding input field
+     */
     private function print_input_tag(string $type, string $name, string $id, string $value='', string $autocomplete='') {
         $open_tag = "<input ";
         $close_tag = ">";
 
-        $type_tag =  'type="' . $type . '" ';
-        $name_tag =  'name="' . $name . '" ';
-        $id_tag =    'id="'   . $id   . '" ';
-        $value_tag = 'value="'. (isset( $value ) ? esc_attr( $value ) : '') . '" ';
+        $type_tag         = 'type="'         . $type . '" ';
+        $name_tag         = 'name="'         . $name . '" ';
+        $id_tag           = 'id="'           . $id   . '" ';
+        $value_tag        = 'value="'        . (isset( $value ) ? esc_attr( $value ) : '') . '" ';
         $autocomplete_tag = 'autocomplete="' . $autocomplete . '" ';
 
         $out = $open_tag . $type_tag . $name_tag . $id_tag . $value_tag . $autocomplete_tag . $close_tag;
