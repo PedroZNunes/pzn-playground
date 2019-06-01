@@ -18,15 +18,17 @@ class General {
 
     private $opt_group_name = 'pzn_nyt_opt_group';
     
-    private $sections;
+    private $sections = array();
 
     private $opt_name = 'nyt_options';
-    private $news_desk_opt_name = 'news_desk';
-    private $source_opt_name = 'source';
-    
     private $opt_values;
 
     public function __construct( string $page_name ) {
+        $this->access_check();
+        
+        // Read in existing option value from database
+        $this->opt_values = get_option( $this->opt_name );
+
         $this->page_name = $page_name;
 
         $this->create_sections();
@@ -35,11 +37,43 @@ class General {
         $this->print_page();
     }
 
+
+    private function access_check() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'you cannot access this page. DENIED', 'Access Denied' );
+        }
+    }
+        /**
+     * create the sections and fields used in the form using custom classes Field and Section
+     */
+    private function create_sections() {
+        $filters_section = new Section (
+            'filters', 
+            'Archive Search Filters', 
+            array( $this, 'psection_info' ), 
+            $this->page_name
+        );
+
+        $filters_section->add_field(
+            'news_desk',
+            'News Desk',
+            array( $this, 'print_field' ),
+            'text'
+        );
+
+        $filters_section->add_field(
+            'source',
+            'Source',
+            array( $this, 'print_field' ),
+            'text'
+        );
+
+        array_push( $this->sections, $filters_section );
+    }
+
     private function register() { 
         add_action( 'admin_init' , array( $this, 'page_init' ) );
     }
-
-    
 
     // inicialização dos campos e seções
     public function page_init() {
@@ -49,62 +83,52 @@ class General {
             array ( $this, 'sanitize' )
         );
 
-        foreach ($this->sections as $section) {
+        foreach ( $this->sections as $section ) {
             add_settings_section( 
                 $section->get_name(), 
                 $section->get_title(), 
                 $section->get_callback(), 
                 $section->get_page_name()
             );
+
+            $fields = $section->get_fields();
+            if ( ! empty( $fields ) ) {
+                foreach ( $fields as $field ) {
+                    $args = [
+                        'name' => $field->get_name(),
+                        'type' => $field->get_type()
+                    ];
+                    add_settings_field( 
+                        $field->get_name(),
+                        $field->get_title(),
+                        $field->get_callback(),
+                        $section->get_page_name(),
+                        $section->get_name(),
+                        $args
+                    );
+                }
+            }
         }
 
-        add_settings_field( 
-            $this->news_desk_opt_name, 
-            'News Desk:', 
-            array( $this, 'pfield_news_desk' ), 
-            $this->page_name, 
-            $this->filters_sect_name
-        );
+        // add_settings_field( 
+        //     $field_name, 
+        //     'News Desk:', 
+        //     array( $this, 'pfield_news_desk' ), 
+        //     $this->page_name, 
+        //     $this->filters_sect_name
+        // );
         
-        add_settings_field( 
-            $this->source_opt_name,
-            'Source:', 
-            array( $this, 'pfield_source' ), 
-            $this->page_name, 
-            $this->filters_sect_name
-        );
+        // add_settings_field( 
+        //     $this->source_opt_name,
+        //     'Source:', 
+        //     array( $this, 'pfield_source' ), 
+        //     $this->page_name, 
+        //     $this->filters_sect_name
+        // );
     }
 
-    private function create_sections() {
-        $filters_section = new Section (
-            'filters', 
-            'Archive Search Filters', 
-            array( $this, 'psection_info' ), 
-            $this->page_name 
-        );
-
-        $filters_section->add_field(
-            'news_desk',
-            'News Desk',
-            array( $this, 'pfield_news_desk' )
-        );
-
-        $filters_section->add_field(
-            'source',
-            'Source',
-            array( $this, 'pfield_source' )
-        );
-
-        array_push( $this->sections, $filters_section );
-    }
 
     private function print_page(){
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( 'you cannot access this page. DENIED', 'Access Denied' );
-        }
-
-        // Read in existing option value from database
-        $this->opt_values = get_option( $this->opt_name );
 
         echo '<div class="wrap">';
 
@@ -126,35 +150,43 @@ class General {
 
      /**
      * Validação dos campos conforme necessário
-     *
      * @param array $input Contains all settings fields as array keys
+     * @return array new sanitized inputs
      */
 
     public function sanitize( $input ) {
         $new_input = array();
-        if( isset( $input[$this->news_desk_opt_name] ) )
-            $new_input[$this->news_desk_opt_name] = sanitize_text_field( $input[$this->news_desk_opt_name] );
 
-        if( isset( $input[$this->source_opt_name] ) )
-            $new_input[$this->source_opt_name] = sanitize_text_field( $input[$this->source_opt_name] );
+        foreach ( $this->sections as $section ) {
+            foreach ( $section->get_fields() as $field ) {
+                if ( isset( $input[$field->get_name()] ) ) {
+                    if ( $field->get_type() == 'text' ) {
+                        $new_input[$field->get_name()] = sanitize_text_field( $input[$field->get_name()] );
+                    }
+                }
+            }
+        }
 
         return $new_input;
     }
 
     //print a form field
-    public function pfield_news_desk() {
-        $name = $this->opt_name . "[$this->news_desk_opt_name]";
-        $value = isset( $this->opt_values[$this->news_desk_opt_name] ) ? esc_attr(  $this->opt_values[$this->news_desk_opt_name] ) : '';
+    public function print_field( $args ) {
+        $field_name = $args['name'];
+        $field_type = $args['type'];
 
-        echo $this->print_input_tag('text', $name, $this->news_desk_opt_name, $value);
+        $name = $this->opt_name . "[$field_name]";
+        $value = isset( $this->opt_values[$field_name] ) ? esc_attr(  $this->opt_values[$field_name] ) : '';
+
+        echo $this->print_input_tag($field_type, $name, $field_name, $value);
     }
 
-    public function pfield_source() {
-        $name = $this->opt_name . "[$this->source_opt_name]";
-        $value = isset( $this->opt_values[$this->source_opt_name] ) ? esc_attr(  $this->opt_values[$this->source_opt_name] ) : '';
+    // public function pfield_source() {
+    //     $name = $this->opt_name . "[$this->source_opt_name]";
+    //     $value = isset( $this->opt_values[$this->source_opt_name] ) ? esc_attr(  $this->opt_values[$this->source_opt_name] ) : '';
         
-        echo $this->print_input_tag('text', $name, $this->source_opt_name, $value);
-    }
+    //     echo $this->print_input_tag('text', $name, $this->source_opt_name, $value);
+    // }
 
     public function psection_info() {
         echo '<p> Echo inside the Section </p>';
