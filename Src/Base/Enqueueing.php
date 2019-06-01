@@ -24,7 +24,7 @@ final class Enqueueing extends Base {
      */ 
     public function on_enqueue_scripts() {
         wp_enqueue_script( 'pzn_nyt_admin_script', $this->constants::BASE_URL . '/assets/main_admin.js' );
-        wp_enqueue_style( 'pzn_nyt_admin_style', $this->constants::BASE_URL . '/assets/main_admin.css' );
+        wp_enqueue_style(  'pzn_nyt_admin_style',  $this->constants::BASE_URL . '/assets/main_admin.css' );
     }
 
     

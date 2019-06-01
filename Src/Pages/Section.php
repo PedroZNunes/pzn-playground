@@ -15,13 +15,13 @@ class Section {
     private $callback_function;
     private $page_name;
 
-    private $fields;
+    private $fields = array();
 
-    public function __construct( string $name, string $title, $callback_function, string $page_name ) {
-        $this->name = $name;
-        $this->title = $title;
+    public function __construct( string $name, string $title, callable $callback_function, string $page_name ) {
+        $this->name              = $name;
+        $this->title             = $title;
         $this->callback_function = $callback_function;
-        $this->page_name = $page_name;
+        $this->page_name         = $page_name;
     }
 
     public function get_name()      { return $this->name; }
@@ -30,8 +30,16 @@ class Section {
     public function get_page_name() { return $this->page_name; }
     public function get_fields()    { return $this->fields; }
 
-    public function add_field( $name, $title, $callback_function ) {
-        $newfield = new Field( $name, $title, $callback_function, $this->page_name, $this);
-        array_push( $this->fields, $newfield );
+    public function add_field( $name, $title, $callback_function, $input_type ) {
+        $new_field = new Field( 
+            $name,
+            $title, 
+            $callback_function, 
+            $this->page_name, 
+            $this, 
+            $input_type
+        );
+        
+        array_push( $this->fields, $new_field );
     }
 }

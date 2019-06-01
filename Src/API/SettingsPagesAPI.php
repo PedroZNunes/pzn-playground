@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package: PedroNunesPlugin
  */
@@ -9,12 +8,12 @@ namespace PZN\NYT\API;
 /**
  * Cria e gerencia tipos custom de post
  */
-class SettingsPagesAPI {
+final class SettingsPagesAPI {
     private $pages;
     private $submenu_pages;
 
     public function __construct( array $pages, array $submenu_pages = [] ) {
-        $this->pages = $pages;
+        $this->pages         = $pages;
         $this->submenu_pages = $submenu_pages;
 
         $this->register();
