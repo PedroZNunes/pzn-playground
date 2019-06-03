@@ -32,7 +32,7 @@ final class Init{
         $instances = [];
 
         foreach ( self::get_services() as $class ) {
-            if ( is_subclass_of( $class, 'PZN\\NYT\\Base\\Base' ) ) {
+            if ( is_subclass_of( $class, 'PZN\\Playground\\Base\\Base' ) ) {
                 $instances[$class] = self::instantiate( $class );
             } else if ( method_exists( $class, 'get_instance' ) ) { //if singleton
                 $instances[$class] = $class::get_instance();
