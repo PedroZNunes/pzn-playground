@@ -3,9 +3,9 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT\Pages\Settings;
+namespace PZN\Playground\Pages\Settings;
 
-use \PZN\NYT\Pages\Section as Section;
+use \PZN\Playground\Pages\Section as Section;
 
 /**
  * Cria a pagina de settings principal
@@ -14,7 +14,7 @@ final class General {
 
     private $page_name;
     private $form_name      = 'filter-form';
-    private $opt_group_name = 'pzn_nyt_opt_group';
+    private $opt_group_name = 'pzn_playground_opt_group';
     
     private $sections       = array();
 
@@ -115,7 +115,7 @@ final class General {
         echo "<h2>" . __( 'New York Times Archives Plugin', 'pzn-nyt' ) . "</h2>"; ?>
 
         <!-- settings form -->
-        <form name=<?php esc_attr_e( $this->form_name, 'pzn_nyt' ); ?> method="post" action="options.php">
+        <form name=<?php esc_attr_e( $this->form_name, 'pzn_playground' ); ?> method="post" action="options.php">
 
         <?php
         // This prints out all hidden setting fields

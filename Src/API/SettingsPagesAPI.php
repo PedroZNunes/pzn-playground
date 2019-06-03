@@ -3,7 +3,7 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT\API;
+namespace PZN\Playground\API;
 
 /**
  * Cria e gerencia tipos custom de post

@@ -3,7 +3,7 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT\Base;
+namespace PZN\Playground\Base;
 
 /** 
  * Classe responsável pela criação de action links na página de ativação do plugin
@@ -16,7 +16,7 @@ final class Links extends Base {
 
     //add links to the plugins page, under the plugin name. settings, support, upgrade, stuff like that
     public function setup_action_links( $links ) {
-        $settings_link = '<a href="admin.php?page=pzn_nyt_articles">' . __('Settings', 'pzn_nyt') . '</a>';
+        $settings_link = '<a href="admin.php?page=pzn_playground">' . __('Settings', 'pzn_playground') . '</a>';
         array_push( $links, $settings_link );
         return $links;
     }

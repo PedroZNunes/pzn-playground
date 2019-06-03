@@ -4,7 +4,7 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT;
+namespace PZN\Playground;
 
 /*
 * Classe responsável pela inicialização de todos os serviços do plugin.

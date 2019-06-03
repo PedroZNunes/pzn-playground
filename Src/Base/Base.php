@@ -3,7 +3,7 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT\Base;
+namespace PZN\Playground\Base;
 
 /*
 * Classe base a todas as classes de inicialização
@@ -12,7 +12,7 @@ abstract class Base {
    protected $constants;
 
    public function __construct() {
-      $this->constants = \PZN\NYT\Constants::class;
+      $this->constants = \PZN\Playground\Constants::class;
 
       $this->register();
    }
