@@ -1,6 +1,6 @@
 {
-    "name": "weet/pzn-nyt-articles",
-    "description": "Wordpress Plugin responsible for communicating with New York Times Archive Search Restful API.",
+    "name": "weet/pzn-playground",
+    "description": "Wordpress Plugin that serves as playground for me to develop new things.",
     "type": "project",
     "license": "GPL",
     "authors": [
@@ -13,7 +13,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "PZN\\NYT\\": "./Src/"
+            "PZN\\Playground\\": "./Src/"
         }
     }
 }

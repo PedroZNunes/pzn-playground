@@ -1,22 +1,24 @@
 <?php
 
-namespace PZN\NYT\Pages;
+namespace PZN\Playground\Pages;
 
 use Settings\General;
 
-use \PZN\NYT\API\SettingsPagesAPI as SettingsAPI;
+use \PZN\Playground\API\SettingsPagesAPI as SettingsAPI;
 
 class Admin {
     
-    private $page_name = 'pzn_nyt_articles';
+    private $page_name = 'pzn_playground';
     private $admin_page;
 
     private static $instance;
 
     private function __construct() {
+
+        // Criar lista de páginas a serem construídas
         $pages = [
             [
-                'title'             => 'New York Times Articles Plugin',
+                'title'             => 'Playground Plusings from Pedro Nunes',
                 'menu_title'        => 'NYT Articles',
                 'capability'        => 'manage_options',
                 'page_slug'         => $this->page_name,
@@ -29,23 +31,31 @@ class Admin {
         /** Quando criar subpages, é criada uma default como primeira subpage. dá pra mudar o nome dela e dar append no conteúdo da principal
          * criando uma subpage com os mesmos dados pra principal, soh mudando o nome (e adicionando função de callback se quiser)
          */
-        $subpages = [
-            [
-                'parent_slug'       => 'pzn_nyt_test',
-                'title'             => 'Test Plugin',
-                'menu_title'        => 'General',
-                'capability'        => 'manage_options',
-                'page_slug'         => 'pzn_nyt_test',
-                'callback_function' => ''
-            ],
-        ];
+        $subpages = [];
+        // $subpages = [
+        //     [
+        //         'parent_slug'       => $this->page_name,
+        //         'title'             => 'Test Plugin',
+        //         'menu_title'        => 'General',
+        //         'capability'        => 'manage_options',
+        //         'page_slug'         => $this->page_name,
+        //         'callback_function' => ''
+        //     ],
+        //     [
+        //         'parent_slug'       => $this->page_name,
+        //         'title'             => 'Test Plugin',
+        //         'menu_title'        => 'sub',
+        //         'capability'        => 'manage_options',
+        //         'page_slug'         => 'pzn_playground_test',
+        //         'callback_function' => function() { echo '<h1>a</h1>';}
+        //     ],
+        // ];
 
+        // Inicializar cada página a ser construída
         $this->admin_page = new Settings\General( $this->page_name );
 
         // Envia as listas de parâmetros pro API que vai gerar as páginas de acordo com as funções de callback enviadas
         new SettingsAPI( $pages, $subpages );
-
-        // $this->register();
     }
 
     /**
@@ -62,9 +72,5 @@ class Admin {
     //função para imprimir as coisas na tela
     public function create_admin_page() {
         $this->admin_page->print_page();
-        // new Settings\General( $this->page_name );
-
-        // $file_path = str_replace ("\\", DIRECTORY_SEPARATOR, Constants::BASE_DIR . "\\templates\\options-page.php");
-        // include_once( $file_path );
     }
 }

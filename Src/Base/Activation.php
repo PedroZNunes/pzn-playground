@@ -3,7 +3,7 @@
  * @package: PedroNunesPlugin
  */
 
-namespace PZN\NYT\Base;
+namespace PZN\Playground\Base;
 
 /*
 * Classe responsável pela ativação correta do plugin
