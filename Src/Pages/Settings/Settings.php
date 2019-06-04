@@ -4,71 +4,41 @@
  */
 
 namespace PZN\Playground\Pages\Settings;
-
 use \PZN\Playground\Pages\Section as Section;
 
-/**
- * Cria a pagina de settings principal
- */
-final class General {
+/*
+* Classe base a todas as classes de inicialização
+*/
+abstract class Settings {
+    protected $constants;
 
-    private $page_name;
-    private $form_name      = 'filter-form';
-    private $opt_group_name = 'pzn_playground_opt_group';
+    protected $page_name;
+    protected $form_name;
+
+    protected $opt_group_name;
     
-    private $sections       = array();
-
-    private $opt_name       = 'nyt_options';
-    private $opt_values;
+    protected $sections = array();
+    protected $opt_name;
+    protected $opt_values;
 
     public function __construct( string $page_name ) {
-        $this->page_name    = $page_name;
-        
-        // Read in existing option value from database
-        $this->opt_values   = get_option( $this->opt_name );
+        $this->constants = \PZN\Playground\Constants::class;
 
-        $this->create_sections();
+        $this->page_name = $page_name;
 
         $this->register();
-    }
+   }
 
-
-    private function access_check() {
+   protected function access_check() {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( 'you cannot access this page. DENIED', 'Access Denied' );
         }
     }
-        /**
-     * create the sections and fields used in the form using custom classes Field and Section
-     */
-    private function create_sections() {
-        $filters_section = new Section (
-            'filters', 
-            'Archive Search Filters', 
-            array( $this, 'psection_info' ), 
-            $this->page_name
-        );
-
-        $filters_section->add_field(
-            'news_desk',
-            'News Desk',
-            array( $this, 'print_field' ),
-            'text'
-        );
-
-        $filters_section->add_field(
-            'source',
-            'Source',
-            array( $this, 'print_field' ),
-            'text'
-        );
-
-        array_push( $this->sections, $filters_section );
-    }
-
-    private function register() { 
-        add_action( 'admin_init', [$this, 'page_init'] );
-    }
+    
+    protected abstract function register();
+    
+    protected abstract function create_sections();
+    public abstract function print_page();
 
     // inicialização dos campos e seções
     public function page_init() {
@@ -78,6 +48,10 @@ final class General {
             array ( $this, 'sanitize' )
         );
 
+    }
+    
+    protected function add_fields() {
+        
         foreach ( $this->sections as $section ) {
             add_settings_section( 
                 $section->get_name(), 
@@ -105,34 +79,26 @@ final class General {
             }
         }
     }
+    
 
+    //print a form field
+    public function print_field( $args ) {
+        $id    = $args['name'];
+        $type  = $args['type'];
 
-    public function print_page(){
-        $this->access_check();
+        $name  = $this->opt_name . "[$id]";
+        $value = isset( $this->opt_values[$id] ) ? esc_attr(  $this->opt_values[$id] ) : '';
 
-        echo '<div class="wrap">';
-
-        echo "<h2>" . __( 'New York Times Archives Plugin', 'pzn-nyt' ) . "</h2>"; ?>
-
-        <!-- settings form -->
-        <form name=<?php esc_attr_e( $this->form_name, 'pzn_playground' ); ?> method="post" action="options.php">
-
-        <?php
-        // This prints out all hidden setting fields
-        settings_fields( $this->opt_group_name );
-        do_settings_sections( $this->page_name );
-        submit_button();
-        
-        echo '</form>';
-        echo '</div>';
+        echo $this->print_input_tag($type, $name, $id, $value);
     }
 
-     /**
+    public function psection_info() {}
+
+    /**
      * Validação dos campos conforme necessário
      * @param   array $input Contains all settings fields as array keys
      * @return  array new sanitized inputs
      */
-
     public function sanitize( $input ) {
         $new_input = array();
 
@@ -148,19 +114,6 @@ final class General {
 
         return $new_input;
     }
-
-    //print a form field
-    public function print_field( $args ) {
-        $id    = $args['name'];
-        $type  = $args['type'];
-
-        $name  = $this->opt_name . "[$id]";
-        $value = isset( $this->opt_values[$id] ) ? esc_attr(  $this->opt_values[$id] ) : '';
-
-        echo $this->print_input_tag($type, $name, $id, $value);
-    }
-
-    public function psection_info() {}
     
     /**
      * @return string Text containing the HTML tag for the corresponding input field
@@ -179,5 +132,4 @@ final class General {
         return $out;
     }
 
-
-}
+ }

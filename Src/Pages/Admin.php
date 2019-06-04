@@ -2,7 +2,6 @@
 
 namespace PZN\Playground\Pages;
 
-use Settings\General;
 
 use \PZN\Playground\API\SettingsPagesAPI as SettingsAPI;
 
@@ -18,8 +17,8 @@ class Admin {
         // Criar lista de páginas a serem construídas
         $pages = [
             [
-                'title'             => 'Playground Plusings from Pedro Nunes',
-                'menu_title'        => 'NYT Articles',
+                'title'             => 'Playground Plugins from Pedro Nunes',
+                'menu_title'        => 'Playground Plugin',
                 'capability'        => 'manage_options',
                 'page_slug'         => $this->page_name,
                 'callback_function' => array( $this, 'create_admin_page' ),
@@ -32,27 +31,37 @@ class Admin {
          * criando uma subpage com os mesmos dados pra principal, soh mudando o nome (e adicionando função de callback se quiser)
          */
         $subpages = [];
-        // $subpages = [
-        //     [
-        //         'parent_slug'       => $this->page_name,
-        //         'title'             => 'Test Plugin',
-        //         'menu_title'        => 'General',
-        //         'capability'        => 'manage_options',
-        //         'page_slug'         => $this->page_name,
-        //         'callback_function' => ''
-        //     ],
-        //     [
-        //         'parent_slug'       => $this->page_name,
-        //         'title'             => 'Test Plugin',
-        //         'menu_title'        => 'sub',
-        //         'capability'        => 'manage_options',
-        //         'page_slug'         => 'pzn_playground_test',
-        //         'callback_function' => function() { echo '<h1>a</h1>';}
-        //     ],
-        // ];
+        $subpages = [
+            [
+                'parent_slug'       => $this->page_name,
+                'title'             => 'Dashboard',
+                'menu_title'        => 'General',
+                'capability'        => 'manage_options',
+                'page_slug'         => $this->page_name,
+                'callback_function' => ''
+            ],
+            [
+                'parent_slug'       => $this->page_name,
+                'title'             => 'Random Submenu A',
+                'menu_title'        => 'Database Connection',
+                'capability'        => 'manage_options',
+                'page_slug'         => $this->page_name . '_sub_a',
+                'callback_function' => array( $this, 'create_sub_admin_page_a' ),
+            ],
+            [
+                'parent_slug'       => $this->page_name,
+                'title'             => 'Random Submenu B',
+                'menu_title'        => 'Custom Post Types',
+                'capability'        => 'manage_options',
+                'page_slug'         => $this->page_name . '_sub_b',
+                'callback_function' => array( $this, 'create_sub_admin_page_b' ),
+            ]
+        ];
 
         // Inicializar cada página a ser construída
-        $this->admin_page = new Settings\General( $this->page_name );
+        $this->admin_page = new Settings\Dashboard( $this->page_name );
+        $this->db_conection_page = new Settings\DBConnection( $this->page_name );
+        $this->cpt_page = new Settings\CPT( $this->page_name );
 
         // Envia as listas de parâmetros pro API que vai gerar as páginas de acordo com as funções de callback enviadas
         new SettingsAPI( $pages, $subpages );
@@ -72,5 +81,13 @@ class Admin {
     //função para imprimir as coisas na tela
     public function create_admin_page() {
         $this->admin_page->print_page();
+    }
+        //função para imprimir as coisas na tela
+    public function create_sub_admin_page_a() {
+        $this->db_conection_page->print_page();
+    }
+        //função para imprimir as coisas na tela
+    public function create_sub_admin_page_b() {
+        $this->cpt_page->print_page();
     }
 }
