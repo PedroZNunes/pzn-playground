@@ -7,7 +7,7 @@
 // namespace PZN\Playground;
 
 // /** 
-//  * Classe responsável pela desativação correta do plugin.
+//  * Classe responsável por xxxxxxxxxxxxxxxxxx
 //  */
 // class ClassName {
     

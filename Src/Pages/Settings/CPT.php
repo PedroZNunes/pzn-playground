@@ -5,7 +5,7 @@
 
 namespace PZN\Playground\Pages\Settings;
 use \PZN\Playground\Pages\Section as Section;
-
+use PZN\Playground\Base\Callbacks as Callbacks;
 
 /**
  * Criar a página responsável por custom post types
@@ -22,11 +22,6 @@ final class CPT extends Settings {
         // $this->create_sections();
         
         add_action( 'admin_init', [$this, 'page_init'] );
-    }
-
-    public function page_init() {
-        $this->create_sections();
-        parent::page_init();
     }
 
     /**
@@ -62,21 +57,9 @@ final class CPT extends Settings {
         $this->access_check();
         $this->add_fields();
 
-        echo '<div class="wrap">';
-
-        echo "<h2>" . __( 'Custom Post Type Options', 'pzn_playground' ) . "</h2>"; ?>
-
-        <!-- settings form -->
-        <form name=<?php esc_attr_e( $this->form_name, 'pzn_playground' ); ?> method="post" action="options.php">
-
-        <?php
-        // This prints out all hidden setting fields
-        settings_fields( $this->opt_group_name );
-        do_settings_sections( $this->page_name );
-        submit_button();
+        //call callback function from 
+        Callbacks::get_template( $this );
         
-        echo '</form>';
-        echo '</div>';
     }
 
 

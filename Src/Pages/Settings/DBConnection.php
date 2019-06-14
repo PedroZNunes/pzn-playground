@@ -5,6 +5,7 @@
 
 namespace PZN\Playground\Pages\Settings;
 use \PZN\Playground\Pages\Section as Section;
+use PZN\Playground\Base\Callbacks as Callbacks;
 
 
 /**
@@ -18,16 +19,10 @@ final class DBConnection extends Settings {
         $this->opt_name       = 'pzn_play_dbconn_opt';
 
         // Read in existing option value from database
-        $this->opt_values   = get_option( $this->opt_name );
+        $this->opt_values = get_option( $this->opt_name );
         $this->create_sections();
         
         add_action( 'admin_init', [$this, 'page_init'] );
-    }
-
-    
-    public function page_init() {
-        $this->create_sections();
-        parent::page_init();
     }
 
 
@@ -56,31 +51,53 @@ final class DBConnection extends Settings {
             'text'
         );
 
-        array_push( $this->sections, $filters_section );
-    }
+        // array_push( $this->sections, $filters_section );
 
+
+        // $checkbox_section = new Section (
+        //     'connection_b', 
+        //     'Database Connection Sub Options', 
+        //     array( $this, 'psection_info' ), 
+        //     $this->page_name
+        // );
+
+        // $checkbox_section->add_field(
+        $filters_section->add_field(
+            'dbconn_suboption_a',
+            'Suboption A',
+            array( $this, 'print_field' ),
+            'checkbox',
+            'Label for option one'
+        );
+
+        // $checkbox_section->add_field(
+        $filters_section->add_field(
+            'dbconn_suboption_b',
+            'Suboption B',
+            array( $this, 'print_field' ),
+            'checkbox'
+        );        
+        
+        // $checkbox_section->add_field(
+        $filters_section->add_field(
+            'dbconn_suboption_c',
+            'Suboption C',
+            array( $this, 'print_field' ),
+            'checkbox'
+        );
+
+        array_push( $this->sections, $filters_section );
+
+        // array_push( $this->sections, $checkbox_section );
+    }
 
     public function print_page(){
         $this->access_check();
         $this->add_fields();
 
-        echo '<div class="wrap">';
+        // 
+        Callbacks::get_template( $this );
 
-        echo "<h2>" . __( 'Connection Options', 'pzn_playground' ) . "</h2>"; ?>
-
-        <!-- settings form -->
-        <form name=<?php esc_attr_e( $this->form_name, 'pzn_playground' ); ?> method="post" action="options.php">
-
-        <?php
-        // This prints out all hidden setting fields
-        settings_fields( $this->opt_group_name );
-        do_settings_sections( $this->page_name );
-        submit_button();
-        
-        echo '</form>';
-        echo '</div>';
     }
-
-
 
 }

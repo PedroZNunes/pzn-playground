@@ -10,6 +10,8 @@ use \PZN\Playground\Pages\Section as Section;
 * Classe base a todas as classes de inicialização
 */
 abstract class Settings {
+    protected $page_builder;
+
     protected $constants;
 
     protected $page_name;
@@ -21,10 +23,13 @@ abstract class Settings {
     protected $opt_name;
     protected $opt_values;
 
-    public function __construct( string $page_name ) {
-        $this->constants = \PZN\Playground\Constants::class;
+    
 
-        $this->page_name = $page_name;
+    public function __construct( string $page_name ) {
+        $this->constants    = \PZN\Playground\Constants::class;
+        $this->page_builder = \PZN\Playground\Base\Callbacks::class;
+        
+        $this->page_name    = $page_name;
 
         $this->register();
    }
@@ -37,21 +42,26 @@ abstract class Settings {
     
     protected abstract function register();
     
-    protected abstract function create_sections();
-    public abstract function print_page();
-
+    
     // inicialização dos campos e seções
     public function page_init() {
+        $this->create_sections();
+        $this->register_settings();
+    }
+    
+    protected abstract function create_sections();
+    
+    protected function register_settings() {
         register_setting( 
             $this->opt_group_name,
             $this->opt_name, 
             array ( $this, 'sanitize' )
         );
-
     }
     
+    public abstract function print_page();
+    
     protected function add_fields() {
-        
         foreach ( $this->sections as $section ) {
             add_settings_section( 
                 $section->get_name(), 
@@ -59,13 +69,14 @@ abstract class Settings {
                 $section->get_callback(), 
                 $section->get_page_name()
             );
-
+            
             $fields = $section->get_fields();
             if ( ! empty( $fields ) ) {
                 foreach ( $fields as $field ) {
                     $args = [
-                        'name' => $field->get_name(),
-                        'type' => $field->get_type()
+                        'name'    => $field->get_name(),
+                        'type'    => $field->get_type(),
+                        'value'   => $field->get_default_value(),
                     ];
                     add_settings_field( 
                         $field->get_name(),
@@ -81,18 +92,67 @@ abstract class Settings {
     }
     
 
+    public function psection_info() {}
+
+
     //print a form field
     public function print_field( $args ) {
-        $id    = $args['name'];
-        $type  = $args['type'];
+        $id      = $args['name'];
+        $name    = $this->opt_name . "[$id]";
+        $type    = $args['type'];
+        $value   = $args['value'];
+        $extra_tags = [];
 
-        $name  = $this->opt_name . "[$id]";
-        $value = isset( $this->opt_values[$id] ) ? esc_attr(  $this->opt_values[$id] ) : '';
+        switch ($type) {
+            case 'text':
+                $value = isset( $this->opt_values[$id] ) ? esc_attr(  $this->opt_values[$id] ) : $args['value'];
+                $autocomplete = 'autocomplete="" ';
+                array_push( $extra_tags, $autocomplete );
+                break;
 
-        echo $this->print_input_tag($type, $name, $id, $value);
+            case 'checkbox':
+                if ( ! isset( $this->opt_values[$id] ) ) {
+                    $this->opt_values[$id] = '0';
+                }
+                $checked = $this->opt_values[$id];
+                $checked = checked( 1, $checked, false ) . ' ';
+                array_push( $extra_tags, $checked );
+
+                $value = '1';
+                break;
+
+            default:
+                
+                break;
+        }
+
+            
+        echo $this->print_input_tag($type, $name, $id, $value, $extra_tags);
     }
 
-    public function psection_info() {}
+    /**
+     * @return string Text containing the HTML tag for the corresponding input field
+     */
+    private function print_input_tag(string $type, string $name, string $id, string $value = '', array $extra_tags = [] ) {
+        $open_tag    = "<input ";
+        $close_tag   = ">";
+
+        $type_tag         = 'type="'         . $type . '" ';
+        $name_tag         = 'name="'         . $name . '" ';
+        $id_tag           = 'id="'           . $id   . '" ';
+        $value_tag        = 'value="'        . ( isset( $value ) ? esc_attr( $value ) : '' ) . '" ';
+        // $checked_tag      = ( ( $type === 'checkbox' && 0 !== $checked ) ? checked( 1, $checked, false ) : '' );
+
+
+
+
+        $html = $open_tag . $type_tag . $name_tag . $id_tag . $value_tag;
+        foreach ( $extra_tags as $tag ) {
+            $html .= $tag;
+        }
+        $html .= $close_tag;
+        return $html;
+    }
 
     /**
      * Validação dos campos conforme necessário
@@ -108,6 +168,9 @@ abstract class Settings {
                     if ( $field->get_type() == 'text' ) {
                         $new_input[$field->get_name()] = sanitize_text_field( $input[$field->get_name()] );
                     }
+                    elseif ( $field->get_type() == 'checkbox' ) {
+                        $new_input[$field->get_name()] = ( $input[$field->get_name()] !== 0 ? 1 : 0 );
+                    }
                 }
             }
         }
@@ -115,21 +178,6 @@ abstract class Settings {
         return $new_input;
     }
     
-    /**
-     * @return string Text containing the HTML tag for the corresponding input field
-     */
-    private function print_input_tag(string $type, string $name, string $id, string $value='', string $autocomplete='') {
-        $open_tag = "<input ";
-        $close_tag = ">";
-
-        $type_tag         = 'type="'         . $type . '" ';
-        $name_tag         = 'name="'         . $name . '" ';
-        $id_tag           = 'id="'           . $id   . '" ';
-        $value_tag        = 'value="'        . (isset( $value ) ? esc_attr( $value ) : '') . '" ';
-        $autocomplete_tag = 'autocomplete="' . $autocomplete . '" ';
-
-        $out = $open_tag . $type_tag . $name_tag . $id_tag . $value_tag . $autocomplete_tag . $close_tag;
-        return $out;
-    }
 
  }
+

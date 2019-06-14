@@ -4,11 +4,13 @@ namespace PZN\Playground\Pages;
 
 
 use \PZN\Playground\API\SettingsPagesAPI as SettingsAPI;
+USE \PZN\Playground\Templates as Templates;
 
 class Admin {
     
     private $page_name = 'pzn_playground';
     private $admin_page;
+    private $templateS_folder = 'Templates/';
 
     private static $instance;
 
