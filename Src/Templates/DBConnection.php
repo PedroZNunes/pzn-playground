@@ -1,6 +1,6 @@
-<div class="wrap">;
+<div class="wrap">
 
-    <h2> <?php __( 'Database Connection Options', 'pzn_playground' ) ?> </h2>;
+    <h2> <?php __( 'Database Connection Options', 'pzn_playground' ); ?> </h2>
 
     <!-- settings form -->
     <form name=<?php esc_attr_e( $this->form_name, 'pzn_playground' ); ?> method="post" action="options.php">
@@ -12,5 +12,5 @@
         submit_button();
         ?>
 
-    </form>;
+    </form>
 </div>

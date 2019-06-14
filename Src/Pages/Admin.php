@@ -82,14 +82,14 @@ class Admin {
     
     //função para imprimir as coisas na tela
     public function create_admin_page() {
-        $this->admin_page->print_page();
+        $this->admin_page->create_page();
     }
         //função para imprimir as coisas na tela
     public function create_sub_admin_page_a() {
-        $this->db_conection_page->print_page();
+        $this->db_conection_page->create_page();
     }
         //função para imprimir as coisas na tela
     public function create_sub_admin_page_b() {
-        $this->cpt_page->print_page();
+        $this->cpt_page->create_page();
     }
 }

@@ -23,13 +23,14 @@ abstract class Settings {
     protected $opt_name;
     protected $opt_values;
 
-    
+    protected $template;
 
     public function __construct( string $page_name ) {
-        $this->constants    = \PZN\Playground\Constants::class;
-        $this->page_builder = \PZN\Playground\Base\Callbacks::class;
-        
-        $this->page_name    = $page_name;
+        $this->constants = \PZN\Playground\Constants::class;
+
+        $this->page_name = $page_name;
+        // register template  template
+        $this->register_template();
 
         $this->register();
    }
@@ -38,6 +39,17 @@ abstract class Settings {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( 'you cannot access this page. DENIED', 'Access Denied' );
         }
+    }
+    
+    protected function register_template() {
+        $filenames = explode( '\\', get_called_class() );
+        
+        $filepath = $this->constants::BASE_DIR . $this->constants::TEMPLATES_DIR . array_pop( $filenames ) . '.php';
+        $this->template = $filepath;
+    }
+
+    protected function print_page() {
+        include_once ($this->template);
     }
     
     protected abstract function register();
@@ -59,7 +71,7 @@ abstract class Settings {
         );
     }
     
-    public abstract function print_page();
+    public abstract function create_page();
     
     protected function add_fields() {
         foreach ( $this->sections as $section ) {

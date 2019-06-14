@@ -5,7 +5,6 @@
 
 namespace PZN\Playground\Pages\Settings;
 use \PZN\Playground\Pages\Section as Section;
-use PZN\Playground\Base\Callbacks as Callbacks;
 
 
 /**
@@ -54,16 +53,11 @@ final class Dashboard extends Settings {
         array_push( $this->sections, $filters_section );
     }
 
-
-    public function print_page(){
+    public function create_page(){
         $this->access_check();
         $this->add_fields();
 
-        //call callback function from base/callbacks
-        Callbacks::get_template( $this );
-
+        $this->print_page();
     }
-
-
 
 }

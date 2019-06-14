@@ -5,7 +5,7 @@
 
 namespace PZN\Playground\Pages\Settings;
 use \PZN\Playground\Pages\Section as Section;
-use PZN\Playground\Base\Callbacks as Callbacks;
+
 
 /**
  * Criar a página responsável por custom post types
@@ -53,15 +53,11 @@ final class CPT extends Settings {
     }
 
 
-    public function print_page(){
+    public function create_page(){
         $this->access_check();
         $this->add_fields();
 
-        //call callback function from 
-        Callbacks::get_template( $this );
-        
+        $this->print_page();
     }
-
-
 
 }

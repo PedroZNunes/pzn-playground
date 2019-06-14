@@ -1,4 +1,4 @@
-<div class="wrap">;
+<div class="wrap">
 
     <h2> <?php __( 'Custom Post Type Options', 'pzn_playground' ) ?> </h2>;
 
@@ -12,5 +12,5 @@
         submit_button();
         ?>
 
-    </form>;
+    </form>
 </div>

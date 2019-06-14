@@ -5,7 +5,6 @@
 
 namespace PZN\Playground\Pages\Settings;
 use \PZN\Playground\Pages\Section as Section;
-use PZN\Playground\Base\Callbacks as Callbacks;
 
 
 /**
@@ -91,12 +90,11 @@ final class DBConnection extends Settings {
         // array_push( $this->sections, $checkbox_section );
     }
 
-    public function print_page(){
+    public function create_page(){
         $this->access_check();
         $this->add_fields();
 
-        // 
-        Callbacks::get_template( $this );
+        $this->print_page();
 
     }
 
