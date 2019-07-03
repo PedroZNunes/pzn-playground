@@ -153,10 +153,6 @@ abstract class Settings {
         $name_tag         = 'name="'         . $name . '" ';
         $id_tag           = 'id="'           . $id   . '" ';
         $value_tag        = 'value="'        . ( isset( $value ) ? esc_attr( $value ) : '' ) . '" ';
-        // $checked_tag      = ( ( $type === 'checkbox' && 0 !== $checked ) ? checked( 1, $checked, false ) : '' );
-
-
-
 
         $html = $open_tag . $type_tag . $name_tag . $id_tag . $value_tag;
         foreach ( $extra_tags as $tag ) {
