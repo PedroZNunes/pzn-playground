@@ -1,0 +1,18 @@
+{
+  "name": "pzn-playground",
+  "version": "1.0.0",
+  "description": "wp plugin playground where i try stuff",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/Whitfurrows/pzn-playground.git"
+  },
+  "author": "Pedro Z Nunes",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}

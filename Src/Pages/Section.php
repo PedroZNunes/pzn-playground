@@ -30,14 +30,15 @@ class Section {
     public function get_page_name() { return $this->page_name; }
     public function get_fields()    { return $this->fields; }
 
-    public function add_field( $name, $title, $callback_function, $input_type ) {
+    public function add_field( string $name, string $title, callable $callback_function, string $input_type, string $default_value = '' ) {
         $new_field = new Field( 
             $name,
             $title, 
             $callback_function, 
             $this->page_name, 
             $this, 
-            $input_type
+            $input_type,
+            $default_value
         );
         
         array_push( $this->fields, $new_field );
